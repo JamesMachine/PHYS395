@@ -1,0 +1,22 @@
+set terminal pdf enhanced
+set output 'q3_output.pdf'
+
+
+set title 'q3 --- original 100 sample points'
+set xlabel 'x'
+set ylabel 'y'
+unset key
+plot 'output3_1.csv'
+
+set title 'q3 --- Expected derivative curve'
+set xlabel 'x'
+set ylabel 'y'
+unset key
+plot 'output3_3.csv' with lines
+
+
+set title 'q3 --- 100 terms derivative approximation'
+set xlabel 'x'
+set ylabel 'y'
+unset key
+plot 'output3_2.csv' with lines

@@ -1,7 +1,7 @@
 !Assignment 1 - q2
 
 !Running Instruction for this specific file
-!gfortran -fdefault-real-8 q2_2.f90 -o q2_2 && ./q2_2
+!gfortran -fdefault-real-8 q3.f90 -o q3 && ./q3
 
 program a1code
 implicit none
@@ -26,24 +26,30 @@ allocate(x(n),y(n),xapprox(k),yapprox(k))
 x=populateArray(-1.0,1.0,n)
 xapprox=populateArray(-1.0,1.0,k)
 
-
-open(1, file = 'output2_3.csv', status='unknown')
+!plotting
+open(1, file = 'output3_1.csv', status='unknown')
 do i=1,n
   y(i)=f(x(i))
   write(1,*)  x(i), y(i)
 end do
 close(1)
 
-open(1, file = 'output2_4.csv', status='unknown')
+open(1, file = 'output3_2.csv', status='unknown')
 yapprox = fapprox(x,y,xapprox,n,k)
 do i=1,k
   write(1,*) xapprox(i), yapprox(i)
 end do
 close(1)
 
-
+open(1, file = 'output3_3.csv', status='unknown')
+do i=1,k
+  yapprox(i)=df(xapprox(i))
+  write(1,*)  xapprox(i), yapprox(i)
+end do
+close(1)
 
 deallocate(x,y,xapprox,yapprox)
+
 
 contains
 
@@ -114,6 +120,13 @@ contains
     f=(1.0+10.0*x**2.0)**(-1.0)
   end function
 
+  elemental function df(x)
+    real,intent(in) ::x
+    real ::df
+
+    df=-20.0*x/(10.0*x**2.0+1.0)**2.0
+  end function
+
 
   pure function populateArray(a,b,n)
     real,intent(in) :: a,b
@@ -147,10 +160,26 @@ contains
       ChebyshevTSums(i)=sums
       end do
     end do
+  end function
+
+  !derivative of ChebyshevTSums
+  function dChebyshevTSums(c,xapprox,n,k)
+    real,intent(in) ::c(n), xapprox(k)
+    integer, intent(in) ::n,k
+
+    integer ::i,j
+    real::dChebyshevTSums(k), sums
+
+    do i=1,k ! i-th number of approximating point
+      sums=0
+      do j=1,n !j-th number of term
+        sums=sums+c(j)*((j-1)*sin((j-1)*acos(x(i))/sqrt(1-x(i)**2)))! make sure j-1 !!!!!
+      dChebyshevTSums(i)=sums
+      end do
+    end do
 
 
   end function
-
   ! approximating value using ChebyshevT given x and y array sample points
   function fapprox(x,y,xapprox,n,k)
     real,intent(in) ::x(n), y(n), xapprox(k)
@@ -172,11 +201,9 @@ contains
     call gaussj(n,A,B)
 
 
-    fapprox(1:k) = ChebyshevTSums(B(1,:),xapprox,n,k)
+    fapprox(1:k) = dChebyshevTSums(B(1,:),xapprox,n,k)
 
   end function
-
-
 
 
 
