@@ -3,33 +3,44 @@
 
 program test
 
-real ::A(2,2), temp(2,2)
+  implicit none
+  integer:: i,n
 
-A(1,1) = 7.0
-A(1,2) = 2.0
-A(2,1) = 5.0
-A(2,2) = 10.0
+  real,dimension(:),allocatable::x,y
 
-call printMatrix(2,2,A)
-!temp(:,2) = A(:,1)
-!A(:,1) = A(:,2)
-!A(:,2) = temp(:,2)
 
-A(:,1)=A(:,1)*2
-call printMatrix(2,2,A)
 
+
+  n=10
+  allocate(x(n),y(n))
+
+  x=populateArray(-1.0,1.0,n)
+  do i=1,n
+    print*, x(i), f(x(i))
+  end do
+
+  deallocate(x,y)
 
 
 contains
 
-  subroutine printMatrix(row, col, M)
-    integer :: row, col
-    real :: M(col,row)
 
-    do i=1,row
-      write(*,*) M(:,i)
-    end do
-  end subroutine
+  elemental function f(x)
+    real, intent(in) :: x
+    real ::f
+
+    f=(1.0+10.0*x**2.0)**(-1.0)
+  end function
+
+
+  pure function populateArray(a,b,n)
+    real,intent(in) :: a,b
+    integer, intent(in) ::n
+    integer ::i
+    real ::populateArray(n)
+
+    populateArray(1:n) = (/(a+(b-a)*i/real((n-1)),i=0,n-1)/)
+  end function
 
 
 end program

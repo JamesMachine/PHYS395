@@ -1,0 +1,21 @@
+set terminal pdf enhanced
+set output 'q2_output.pdf'
+
+
+set multiplot
+set title 'q2 --- 10 terms'
+set xlabel 'x'
+set ylabel 'y'
+unset key
+plot 'output2.csv'
+plot 'output2_2.csv' with lines
+unset multiplot
+
+set multiplot
+set title 'q2 --- 100 terms'
+set xlabel 'x'
+set ylabel 'y'
+unset key
+plot 'output2_3.csv'
+plot 'output2_4.csv' with lines
+unset multiplot
