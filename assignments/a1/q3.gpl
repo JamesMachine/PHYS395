@@ -12,11 +12,11 @@ set title 'q3 --- Expected derivative curve'
 set xlabel 'x'
 set ylabel 'y'
 unset key
-plot 'output3_3.csv' with lines
+plot 'output3_2.csv' with lines
 
 
 set title 'q3 --- 100 terms derivative approximation'
 set xlabel 'x'
 set ylabel 'y'
 unset key
-plot 'output3_2.csv' with lines
+plot 'output3_3.csv' with lines

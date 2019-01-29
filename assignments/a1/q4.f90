@@ -1,7 +1,8 @@
-!Assignment 1 - q3 - test 100 terms
+!Assignment 1 - q4 - 10 terms
 
 !Running Instruction for this specific file
-!gfortran -fdefault-real-8 q3.f90 -o q3 && ./q3
+!gfortran -fdefault-real-8 q4.f90 -o q4 && ./q4
+
 
 program a1code
 implicit none
@@ -16,7 +17,7 @@ real,dimension(:),allocatable::x,y,xapprox,yapprox,xexpect,yexpect
 
 
 !choose number of samples
-n=100
+n=10
 
 !choose output points as approximation
 k=1000
@@ -27,28 +28,58 @@ x=populateArray(-1.0,1.0,n)
 xapprox=populateArray(-1.0,1.0,k)
 xexpect=populateArray(-1.0,1.0,k)
 
-!plotting original sample points
-open(1, file = 'output3_1.csv', status='unknown')
+!plotting samples
+open(1, file = 'output4_1.csv', status='unknown')
 do i=1,n
   y(i)=f(x(i))
   write(1,*)  x(i), y(i)
 end do
 close(1)
 
-
-!plotting expected curve
-open(1, file = 'output3_2.csv', status='unknown')
+! plotting expected curve
+open(1, file = 'output4_2.csv', status='unknown')
 do i=1,k
-  yexpect(i)=df(xexpect(i))
-  write(1,*)  xexpect(i), yexpect(i)
+  yexpect = f(xexpect(i))
+  write(1,*) xexpect(i), yexpect(i)
 end do
 close(1)
 
-!plotting appriximated curve
-open(1, file = 'output3_3.csv', status='unknown')
+! plotting approximated points
+open(1, file = 'output4_3.csv', status='unknown')
+yapprox = fapprox(x,y,xapprox,n,k)
+do i=1,k
+  write(1,*) xapprox(i), yapprox(i)
+end do
+close(1)
+
+!plotting error taking abolute value of expected values and approximated values
+open(1, file = 'output4_4.csv', status='unknown')
+do i=1,k
+  write(1,*) xexpect(i), abs(yexpect(i)-yapprox(i))
+end do
+close(1)
+
+! now doing derivative -----------------------
+! plotting expected curve
+open(1, file = 'output4_5.csv', status='unknown')
+do i=1,k
+  yexpect = df(xexpect(i))
+  write(1,*) xexpect(i), yexpect(i)
+end do
+close(1)
+
+! plotting approximated derivative points
+open(1, file = 'output4_6.csv', status='unknown')
 yapprox = dfapprox(x,y,xapprox,n,k)
 do i=1,k
   write(1,*) xapprox(i), yapprox(i)
+end do
+close(1)
+
+!plotting error taking abolute value of expected values and approximated values
+open(1, file = 'output4_7.csv', status='unknown')
+do i=1,k
+  write(1,*) xexpect(i), abs(yexpect(i)-yapprox(i))
 end do
 close(1)
 
@@ -208,7 +239,6 @@ contains
 
 
     fapprox(1:k) = ChebyshevTSums(B(1,:),xapprox,n,k)
-
   end function
 
   ! derivative approximation

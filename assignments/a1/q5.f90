@@ -1,7 +1,8 @@
-!Assignment 1 - q3 - test 100 terms
+!Assignment 1 - q5 - 10 terms
 
 !Running Instruction for this specific file
-!gfortran -fdefault-real-8 q3.f90 -o q3 && ./q3
+!gfortran -fdefault-real-8 q5.f90 -o q5 && ./q5
+
 
 program a1code
 implicit none
@@ -16,39 +17,70 @@ real,dimension(:),allocatable::x,y,xapprox,yapprox,xexpect,yexpect
 
 
 !choose number of samples
-n=100
+n=10
 
 !choose output points as approximation
 k=1000
 
 allocate(x(n),y(n),xapprox(k),yapprox(k),xexpect(k),yexpect(k))
 
-x=populateArray(-1.0,1.0,n)
-xapprox=populateArray(-1.0,1.0,k)
-xexpect=populateArray(-1.0,1.0,k)
+!using populateArray2 instead of populateArray
+x=populateArray2(-1.0,1.0,n)
+xapprox=populateArray2(-1.0,1.0,k)
+xexpect=populateArray2(-1.0,1.0,k)
 
-!plotting original sample points
-open(1, file = 'output3_1.csv', status='unknown')
+!plotting samples
+open(1, file = 'output5_1.csv', status='unknown')
 do i=1,n
   y(i)=f(x(i))
   write(1,*)  x(i), y(i)
 end do
 close(1)
 
-
-!plotting expected curve
-open(1, file = 'output3_2.csv', status='unknown')
+! plotting expected curve
+open(1, file = 'output5_2.csv', status='unknown')
 do i=1,k
-  yexpect(i)=df(xexpect(i))
-  write(1,*)  xexpect(i), yexpect(i)
+  yexpect = f(xexpect(i))
+  write(1,*) xexpect(i), yexpect(i)
 end do
 close(1)
 
-!plotting appriximated curve
-open(1, file = 'output3_3.csv', status='unknown')
+! plotting approximated points
+open(1, file = 'output5_3.csv', status='unknown')
+yapprox = fapprox(x,y,xapprox,n,k)
+do i=1,k
+  write(1,*) xapprox(i), yapprox(i)
+end do
+close(1)
+
+!plotting error taking abolute value of expected values and approximated values
+open(1, file = 'output5_4.csv', status='unknown')
+do i=1,k
+  write(1,*) xexpect(i), abs(yexpect(i)-yapprox(i))
+end do
+close(1)
+
+! now doing derivative -----------------------
+! plotting expected curve
+open(1, file = 'output5_5.csv', status='unknown')
+do i=1,k
+  yexpect = df(xexpect(i))
+  write(1,*) xexpect(i), yexpect(i)
+end do
+close(1)
+
+! plotting approximated derivative points
+open(1, file = 'output5_6.csv', status='unknown')
 yapprox = dfapprox(x,y,xapprox,n,k)
 do i=1,k
   write(1,*) xapprox(i), yapprox(i)
+end do
+close(1)
+
+!plotting error taking abolute value of expected values and approximated values
+open(1, file = 'output5_7.csv', status='unknown')
+do i=1,k
+  write(1,*) xexpect(i), abs(yexpect(i)-yapprox(i))
 end do
 close(1)
 
@@ -141,6 +173,17 @@ contains
     populateArray(1:n) = (/(a+(b-a)*i/real((n-1)),i=0,n-1)/)
   end function
 
+  pure function populateArray2(a,b,n)
+    real,intent(in) :: a,b
+    integer, intent(in) ::n
+    integer ::i
+    real,parameter ::pi = 3.1415926535897932384626433832795028841971693
+    real ::populateArray2(n)
+
+    populateArray2(1:n) = (/(cos((pi/n)*(i-0.5)),i=0,n-1)/) !didn't sort
+
+  end function
+
 
   elemental function ChebyshevT(x, n)
     real ChebyshevT, x; integer n
@@ -208,7 +251,6 @@ contains
 
 
     fapprox(1:k) = ChebyshevTSums(B(1,:),xapprox,n,k)
-
   end function
 
   ! derivative approximation

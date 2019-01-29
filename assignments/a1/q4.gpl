@@ -1,0 +1,129 @@
+set terminal pdf enhanced
+set output 'q4_output_10terms.pdf'
+
+
+set title 'q4 --- original 10 sample points'
+set xlabel 'x'
+set ylabel 'y'
+unset key
+plot 'output4_1.csv'
+
+set title 'q4 --- Expected curve'
+set xlabel 'x'
+set ylabel 'y'
+unset key
+plot 'output4_2.csv' with lines
+
+
+set title 'q4 --- approximation curve'
+set xlabel 'x'
+set ylabel 'y'
+unset key
+plot 'output4_3.csv' with lines
+
+set title 'q4 --- error: abs(yexpect - yapprox)'
+set xlabel 'x'
+set ylabel 'y'
+unset key
+plot 'output4_4.csv' with lines
+
+
+
+set title 'q4 --- Expected derivative curve'
+set xlabel 'x'
+set ylabel 'y'
+unset key
+plot 'output4_5.csv' with lines
+
+
+set title 'q4 --- approximated derivative curve'
+set xlabel 'x'
+set ylabel 'y'
+unset key
+plot 'output4_6.csv' with lines
+
+set title 'q4 --- error for derivative: abs(yexpect - yapprox)'
+set xlabel 'x'
+set ylabel 'y'
+unset key
+plot 'output4_7.csv' with lines
+
+
+
+
+
+
+
+
+
+
+
+
+set terminal pdf enhanced
+set output 'q4_output_100terms.pdf'
+
+
+set title 'q4 --- original 100 sample points'
+set xlabel 'x'
+set ylabel 'y'
+unset key
+plot 'output4_1_2.csv'
+
+set title 'q4 --- Expected curve'
+set xlabel 'x'
+set ylabel 'y'
+unset key
+plot 'output4_2_2.csv' with lines
+
+
+set title 'q4 --- approximation curve'
+set xlabel 'x'
+set ylabel 'y'
+unset key
+plot 'output4_3_2.csv' with lines
+
+set title 'q4 --- error: abs(yexpect - yapprox)'
+set xlabel 'x'
+set ylabel 'y'
+unset key
+plot 'output4_4_2.csv' with lines
+
+
+
+set title 'q4 --- Expected derivative curve'
+set xlabel 'x'
+set ylabel 'y'
+unset key
+plot 'output4_5_2.csv' with lines
+
+
+set title 'q4 --- approximated derivative curve'
+set xlabel 'x'
+set ylabel 'y'
+unset key
+plot 'output4_6_2.csv' with lines
+
+set title 'q4 --- error for derivative: abs(yexpect - yapprox)'
+set xlabel 'x'
+set ylabel 'y'
+unset key
+plot 'output4_7_2.csv' with lines
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

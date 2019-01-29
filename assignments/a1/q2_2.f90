@@ -1,4 +1,4 @@
-!Assignment 1 - q2
+!Assignment 1 - q2 - 100terms
 
 !Running Instruction for this specific file
 !gfortran -fdefault-real-8 q2_2.f90 -o q2_2 && ./q2_2
