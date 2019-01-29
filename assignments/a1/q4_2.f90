@@ -13,7 +13,7 @@ integer:: i,n, k
 !n: number of samples
 !k: number of output points
 
-real,dimension(:),allocatable::x,y,xapprox,yapprox,xexpect,yexpect
+real,dimension(:),allocatable::x,y,xapprox,yapprox,xexpect,yexpect,error
 
 
 !choose number of samples
@@ -22,12 +22,14 @@ n=100
 !choose output points as approximation
 k=1000
 
-allocate(x(n),y(n),xapprox(k),yapprox(k),xexpect(k),yexpect(k))
+allocate(x(n),y(n),xapprox(k),yapprox(k),xexpect(k),yexpect(k),error(k))
 
 x=populateArray(-1.0,1.0,n)
 xapprox=populateArray(-1.0,1.0,k)
 xexpect=populateArray(-1.0,1.0,k)
 
+write(*,*)
+write(*,*) 'Approximating 100 sample points using 100 terms (q4) -------------------'
 !plotting samples
 open(1, file = 'output4_1_2.csv', status='unknown')
 do i=1,n
@@ -39,7 +41,7 @@ close(1)
 ! plotting expected curve
 open(1, file = 'output4_2_2.csv', status='unknown')
 do i=1,k
-  yexpect = f(xexpect(i))
+  yexpect(i) = f(xexpect(i))
   write(1,*) xexpect(i), yexpect(i)
 end do
 close(1)
@@ -55,15 +57,18 @@ close(1)
 !plotting error taking abolute value of expected values and approximated values
 open(1, file = 'output4_4_2.csv', status='unknown')
 do i=1,k
-  write(1,*) xexpect(i), abs(yexpect(i)-yapprox(i))
+  error(i)=abs(yexpect(i)-yapprox(i))
+  write(1,*) xexpect(i), error(i)
 end do
 close(1)
+write(*,*) " 1. max error for 100 terms:" ,maxval(error)
+write(*,*) " 2. x value at the max error value for 100 terms:" ,xexpect(maxloc(error))
 
 ! now doing derivative -----------------------
 ! plotting expected curve
 open(1, file = 'output4_5_2.csv', status='unknown')
 do i=1,k
-  yexpect = df(xexpect(i))
+  yexpect(i) = df(xexpect(i))
   write(1,*) xexpect(i), yexpect(i)
 end do
 close(1)
@@ -79,11 +84,14 @@ close(1)
 !plotting error taking abolute value of expected values and approximated values
 open(1, file = 'output4_7_2.csv', status='unknown')
 do i=1,k
-  write(1,*) xexpect(i), abs(yexpect(i)-yapprox(i))
+  error(i)=abs(yexpect(i)-yapprox(i))
+  write(1,*) xexpect(i), error(i)
 end do
 close(1)
+write(*,*) " 3. max error for 10 terms (derivative):" ,maxval(error)
+write(*,*) " 4. x value at the max error value for 10 terms (derivative):" ,xexpect(maxloc(error))
 
-deallocate(x,y,xapprox,yapprox,xexpect,yexpect)
+deallocate(x,y,xapprox,yapprox,xexpect,yexpect,error)
 
 
 contains
@@ -191,7 +199,7 @@ contains
     do i=1,k ! i-th number of approximating point
       sums=0
       do j=1,n !j-th number of term
-        sums=sums+c(j)*cos((j-1)*acos(x(i))) ! make sure j-1 !!!!!
+        sums=sums+c(j)*cos((j-1)*acos(xapprox(i))) ! make sure j-1 !!!!!
       ChebyshevTSums(i)=sums
       end do
     end do
@@ -208,7 +216,7 @@ contains
     do i=1,k ! i-th number of approximating point
       sums=0
       do j=1,n !j-th number of term
-        sums=sums+c(j)*((j-1)*sin((j-1)*acos(x(i))/sqrt(1-x(i)**2)))! make sure j-1 !!!!!
+        sums=sums+c(j)*((j-1)*sin((j-1)*acos(xapprox(i))/sqrt(1-xapprox(i)**2)))! make sure j-1 !!!!!
       dChebyshevTSums(i)=sums
       end do
     end do
