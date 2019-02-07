@@ -3,19 +3,19 @@ set output 'q2_output.pdf'
 
 
 set multiplot
-set title 'q2 --- 10 terms'
+set title 'q2 --- Original Data (10 sample points) and Approximation (10 terms)'
 set xlabel 'x'
 set ylabel 'y'
-unset key
-plot 'output2.csv'
-plot 'output2_2.csv' with lines
+set xrange [-1:1]
+set yrange [-0.1:1.1]
+plot 'output2.csv' title "Original Data", 'output2_2.csv' with lines title "Approximation"
 unset multiplot
 
 set multiplot
-set title 'q2 --- 100 terms'
+set title 'q2 --- Original Data (100 sample points) and Approximation (100 terms)'
 set xlabel 'x'
 set ylabel 'y'
-unset key
-plot 'output2_3.csv'
-plot 'output2_4.csv' with lines
+set xrange [-1:1]
+set yrange [-0.1:1.1]
+plot 'output2_3.csv' title "Original Data", 'output2_4.csv' with lines title "Approximation"
 unset multiplot

@@ -99,7 +99,7 @@ contains
 
 
   subroutine printMatrix(row, col, M)
-    integer :: row, col
+    integer :: row, col,i
     real :: M(col,row)
 
     do i=1,row

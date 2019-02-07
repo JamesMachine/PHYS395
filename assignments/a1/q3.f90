@@ -16,7 +16,7 @@ real,dimension(:),allocatable::x,y,xapprox,yapprox,xexpect,yexpect
 
 
 !choose number of samples
-n=100
+n=10
 
 !choose output points as approximation
 k=1000
@@ -109,7 +109,7 @@ contains
 
 
   subroutine printMatrix(row, col, M)
-    integer :: row, col
+    integer :: row, col,i
     real :: M(col,row)
 
     do i=1,row
@@ -177,7 +177,8 @@ contains
     do i=1,k ! i-th number of approximating point
       sums=0
       do j=1,n !j-th number of term
-        sums=sums+c(j)*((j-1)*sin((j-1)*acos(xapprox(i))/sqrt(1-xapprox(i)**2)))! make sure j-1 !!!!!
+        !sums=sums+c(j)*((j-1)*sin((j-1)*acos(xapprox(i))/sqrt(1-xapprox(i)**2)))! make sure j-1 !!!!! --> wrong
+        sums = sums + c(j) * (j-1) * sin((j-1) * acos(xapprox(i))) / sqrt(1 - xapprox(i)**2)
       dChebyshevTSums(i)=sums
       end do
     end do
