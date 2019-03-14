@@ -1,0 +1,26 @@
+filepath='./output/results'
+
+
+set terminal png enhanced
+set output './output/energy_conservation_violation.png'
+
+set grid
+set title 'Energy Conservation Violation: E/E0 - 1'
+set xlabel 't'
+set ylabel 'E/E0 - 1 (Evio)'
+set xrange [0:2]
+plot filepath u 1:8 with lines title "E/E0-1"
+
+
+
+set terminal png enhanced
+set output './output/trajectory.png'
+set multiplot
+set grid
+set title 'Trajectory of Both Pendulum'
+set xlabel 'x'
+set ylabel 'y'
+set xrange [-1.1:1.1]
+set yrange [-2.1:0.1]
+plot filepath using 4:5 w l t "pendulum 1" lc "web-green", filepath using 6:7 w l t "pendulum 2" lc "red"
+unset multiplot

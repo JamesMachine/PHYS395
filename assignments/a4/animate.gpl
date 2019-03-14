@@ -1,0 +1,25 @@
+filepath='./output/results'
+
+set term gif animate optimize delay 0 size 480,360
+set output './output/motion.gif'
+
+set title "Double Pendulum Animation"
+set grid
+set xlabel 'x'
+set ylabel 'y'
+set xrange [-1.1:1.1]
+set yrange [-2.1:0.1]
+unset key
+
+
+#animation
+numlines = floor(system("wc -l ./output/results")) #whole data takes too much time
+print "number of lines in results: ", numlines
+
+do for [i = 0:numlines] { #reduce animate frames, to reduce the number of running time
+   print "Animation Frame at index:", i
+   plot filepath every ::i::i using 4:5 pt 7 ps 2 lc "web-green", filepath every ::i::i using 6:7 pt 7 ps 2 lc "red",\
+   filepath every ::i::i using 2:3:($4-$2):($5-$3) with vectors nohead lc "purple",\
+   filepath every ::i::i using 4:5:($6-$4):($7-$5) with vectors nohead lc "purple",\
+   filepath every ::0::i using 4:5 w l lc "web-green", filepath every ::0::i using 6:7 w l lc "red",\
+   }
