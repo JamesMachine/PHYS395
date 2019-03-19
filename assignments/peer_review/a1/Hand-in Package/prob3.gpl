@@ -1,0 +1,9 @@
+set terminal pdf enhanced
+set output 'prob3.pdf'
+
+set multiplot
+set title 'g(x)=df(x) approximation (100 terms)'
+set xlabel 'x'
+set ylabel 'g(x)'
+plot 'greal_100.csv', 'gapprox_100.csv' with lines
+unset multiplot

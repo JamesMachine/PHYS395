@@ -1,0 +1,17 @@
+#!/usr/bin/env gnuplot
+
+set terminal pdf enhanced
+set output 'Using_Zeros.pdf'
+
+set xlabel 'x'
+set ylabel 'y'
+
+set style line 1 lt rgb "red"
+set style line 2 lt rgb "blue"
+set style line 3 lt rgb "black"
+
+
+plot 'DATA5' i 0 u 1:2 w lines ls 3 title 'Actual'
+replot 'DATA4' i 1 u 1:2 w lines ls 1 title '10 terms'
+replot 'DATA5' i 1 u 1:2 w lines ls 2 title '100 terms'
+

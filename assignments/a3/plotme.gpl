@@ -1,0 +1,32 @@
+set terminal pdf enhanced
+set output 'alloutput.pdf'
+
+set multiplot
+set grid
+set title 'f(x) = x^3 − x + 1/4'
+set xlabel 'x'
+set ylabel 'y'
+set xrange [-2:2]
+set yrange [-2:2]
+plot 'output1' with lines title "f(x)",'output1_roots' title "roots"
+unset multiplot
+
+set multiplot
+set grid
+set title 'f(x) = (x^2 - 1)^2 + x'
+set xlabel 'x'
+set ylabel 'y'
+set xrange [-2:2]
+set yrange [-2:2]
+plot 'output2' with lines title "f(x)",'output2_minima' title "minima"
+unset multiplot
+
+set multiplot
+set grid
+set title 'Non-linear fitting using LM'
+set xlabel 'x'
+set ylabel 'y'
+set xrange [0:1]
+set yrange [-15:15]
+plot 'data.dat' with dots title "data",'output3_LM' title "fit" with lines
+unset multiplot

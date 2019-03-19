@@ -1,0 +1,11 @@
+set terminal pdf enhanced
+set output 'Plot.pdf'
+
+set multiplot
+set title 'Levenberg-Marquardt Non-Linear Fit (n=3)'
+set xlabel 'x'
+set ylabel 'y'
+set key right bottom Right
+set datafile separator ","
+plot 'LMFit.csv' u 1:2 title 'Data', 'LMFit.csv' u 1:3 w l title 'Fit'
+unset multiplot

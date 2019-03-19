@@ -1,0 +1,12 @@
+"./runme.sh" to run all 3 programs:
+	- "newtmet.f90" for question 1
+	- "goldenmin.f90" for question 2,3
+	- "levmar.f90" for question 4,5
+"plot.gpl" contains gnuplot instructions for question 5 plot
+
+####Assignment notes####
+1) Starting value is scanned between two values, and it can be seen that 3 different roots are found
+
+2,3) Starting brackets scanned between two values like in (1), and it can be seen that 2 different minima are found
+
+4,5) I have tried many different starting sets of function parameters, including the ones currently in the code "levmar.f90" which are already close enough to the best-fit coefficients that the reduced chi-squared is about 2. I'm not sure why no convergence seems to occur at all, as I have followed the procedure outlined in the textbook (section 15.5) and checked my code over about 10 times.

@@ -1,7 +1,7 @@
 
 echo "Long run program for Q3 starts..."
 
-gfortran -O3 -fopenmp dbpend_longrun.f90 -llapack -lcfitsio -o dbpend_longrun && ./dbpend_longrun
+gfortran -O3 -fopenmp dbpend_phsp_longrun.f90 -llapack -lcfitsio -o dbpend_phsp_longrun && ./dbpend_phsp_longrun
 
 echo "plotting starts..."
 python plotfit_longrun.py

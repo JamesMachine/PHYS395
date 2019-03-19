@@ -1,8 +1,8 @@
 !test double pendulum
 
-! compile and run with: gfortran -O3 -fdefault-real-8 -fopenmp dbpend.f90 -lcfitsio -o dbpend && ./dbpend
+! compile and run with: gfortran -O3 -fopenmp dbpened_phsp.f90 -lcfitsio -o dbpened_phsp && ./dbpened_phsp
 
-program dbpened; implicit none
+program dbpened_phsp; implicit none
 
   !declarations
   real,parameter :: m1 = 1, m2 = 1
@@ -14,8 +14,8 @@ program dbpened; implicit none
   real,parameter :: dt = 0.038
 
   ! image size and scan bounds
-  integer, parameter :: nx = 2**5, ny = 2**5
-  real(8), parameter :: xx(2) = [-3, 3], yy(2) = [-3, 3]
+  integer, parameter :: nx = 2**5, ny = 2**5 !used smaller case to reduce the time!!!!!!!!!!!!!!!!!!!
+  real::xx(2),yy(2)
 
   ! non-parameter variables
   integer:: i, j
@@ -23,14 +23,30 @@ program dbpened; implicit none
   real::period = sqrt(l1/grav)
   real::tflip, tlength
 
+  ! data array (allocatable to avoid problems with system resources)
+  real(4), allocatable :: data(:,:,:)
+  allocate(data(1,nx,ny))
 
-  write(*,*) "Q1,Q2: For testing purpose, perform only when initial th1(0)=pi/3.0, th2(0)=-pi/3.0..."
-  u = (/ pi/3.0, -pi/3.0, 0.0, 0.0 /) !initial values for IVP
-  tlength = 100*period
-  u = integrate(u(1),u(2),tlength,dt, .true.) !true if you want to write into file "results"
-  write(*,*) "testing done..."
-  write(*,*) ""
+ xx = [-3, 3]
+ yy = [-3, 3]
+  write(*,*) "Q3: phase space scan starts..."
+  tlength = 10001*period
+  !$omp parallel do
+  do j = 1,ny
+    do i = 1,nx
+      write(*,*) 'th1(0)=',xx(1) + (xx(2)-xx(1))*(i-1)/(nx-1),"th2(0)=",yy(1) + (yy(2)-yy(1))*(j-1)/(ny-1)
+      tflip = integrate2(xx(1) + (xx(2)-xx(1))*(i-1)/(nx-1), yy(1) + (yy(2)-yy(1))*(j-1)/(ny-1), tlength, dt)
+      data(:,i,j) = log10(tflip) / tlength
+    end do
+  end do
+  !$omp end parallel do
+  write(*,*) "phase space scan ends..."
 
+  ! write out image to file
+  call write2fits('./output/data.fit', data, xx, yy, ['th1 ','th2 ','thd1','thd2'], '(th1(0),th2(0))')
+
+
+  deallocate(data)
 
 
 contains
@@ -121,6 +137,7 @@ contains
 
     ! start from a given position at rest
     u = [th1, th2, 0.0, 0.0]
+
     E0 = E(u)
 
     ! number of time steps needed

@@ -1,8 +1,8 @@
-! Only for problem 3, scanning phase space
+!test double pendulum
 
-! compile and run with: gfortran -O3 -fdefault-real-8 -fopenmp dbpened_longrun.f90 -lcfitsio -o dbpened_longrun && ./dbpened_longrun
+! compile and run with: gfortran -O3 -fopenmp dbpened_phsp.f90 -lcfitsio -o dbpened_phsp && ./dbpened_phsp
 
-program dbpened_longrun; implicit none
+program dbpened_phsp; implicit none
 
   !declarations
   real,parameter :: m1 = 1, m2 = 1
@@ -11,11 +11,11 @@ program dbpened_longrun; implicit none
   real,parameter :: pi = 3.141592653589793238462643383279502884197169399375105821Q0
   real,parameter :: x0 = 0, y0 = 0
   real,parameter :: eps = 10e-12
-  real,parameter :: dt = 0.1
+  real,parameter :: dt = 0.038
 
   ! image size and scan bounds
-  integer, parameter :: nx = 2**8, ny = 2**8
-  real(4), parameter :: xx(2) = [-3, 3], yy(2) = [-3, 3]
+  integer, parameter :: nx = 2**8, ny = 2**8 !used smaller case to reduce the time!!!!!!!!!!!!!!!!!!!
+  real::x(2),yy(2)
 
   ! non-parameter variables
   integer:: i, j
@@ -27,10 +27,10 @@ program dbpened_longrun; implicit none
   real(4), allocatable :: data(:,:,:)
   allocate(data(1,nx,ny))
 
-  !stop !de-comment this if you dont want to phase scan:
-
+  xx = [-3, 3]
+  yy = [-3, 3]
   write(*,*) "Q3: phase space scan starts..."
-  tlength = 10001*period !this should be 100001*period but taking too much time (will take > 24hours..)
+  tlength = 10001*period
   !$omp parallel do
   do j = 1,ny
     do i = 1,nx
@@ -172,6 +172,8 @@ contains
   function integrate2(th1, th2, t, dt)
     real:: th1, th2, t, dt,integrate2
     real:: u(4)
+    real::E0minToflip
+    real::E0
     integer:: n
 
     ! start from a given position at rest
@@ -179,6 +181,15 @@ contains
 
     ! number of time steps needed
     n = floor(t/dt)
+
+    E0 = E(u)
+    E0minToflip = min(E([pi, 0.0, 0.0, 0.0]),E([0.0, pi, 0.0, 0.0]))
+
+    !If initial energy is less than minimum initial energy required to flip, return the whole t_length
+    if (E0 < E0minToflip) then
+      integrate2 = n*dt
+      return
+    end if
 
     do i = 1,n
       associate( th1 => u(1), th2 => u(2), thd1 => u(3), thd2 => u(4) )
@@ -202,57 +213,69 @@ contains
   ! write array data into FITS file as sequence of image extensions
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-  !using FITSIO library
+  ! write array data into FITS file as sequence of image extensions
   subroutine write2fits(file, array, xx, yy, vars, coords)
-          character(len=*) file, vars(:), coords
-          real(4) array(:,:,:); real(4) xx(2), yy(2)
-          optional xx, yy, vars, coords
+    character(len=*) file, vars(:), coords
+    real array(:,:,:), xx(2), yy(2)
+    optional xx, yy, vars, coords
 
-          integer i, j, status, unit
-          integer :: hdus, naxis = 2, n(2), npix
-          integer :: bitpix = -32, group = 1, blocksize = -1
+    integer i, j, status, unit
+    integer :: hdus, naxis = 2, n(2), npix
+    integer :: bitpix, group = 1, blocksize = -1
 
-          ! data dimansions
-          hdus = size(array,1)
-          n(1) = size(array,2)
-          n(2) = size(array,3)
-          npix = n(1)*n(2)
+    ! data dimansions
+    hdus = size(array,1)
+    n(1) = size(array,2)
+    n(2) = size(array,3)
+    npix = n(1)*n(2)
 
-          ! delete file if it already exists
-          open(unit=1234, iostat=status, file=file, status='old')
-          if (status == 0) close(1234, status='delete'); status = 0
+    ! data format
+    select case (kind(array))
+    case (4); bitpix = -32
+    case (8); bitpix = -64
+    case default; call abort
+    end select
 
-          ! initialize FITS file
-          call ftgiou(unit, status)
-          call ftinit(unit, file, blocksize, status)
+    ! delete file if it already exists
+    open(unit=1234, iostat=status, file=file, status='old')
+    if (status == 0) close(1234, status='delete'); status = 0
 
-          ! write image extensions
-          do i = 1,hdus
-                  call ftiimg(unit, bitpix, naxis, n, status)
-                  call ftppre(unit, group, 1, npix, array(i,:,:), status)
+    ! initialize FITS file
+    call ftgiou(unit, status)
+    call ftinit(unit, file, blocksize, status)
 
-                  if (present(vars)) then
-                          if (present(coords)) then
-                                  call ftpkys(unit, 'EXTNAME', trim(vars(i))//coords, 'variable stored in extension', status)
-                          else
-                                  call ftpkys(unit, 'EXTNAME', trim(vars(i)), 'variable stored in extension', status)
-                          end if
-                  end if
-                  if (present(xx)) then
-                          call ftpkyj(unit, 'CRPIX1', 1, 'x-axis origin pixel', status)
-                          call ftpkyd(unit, 'CRVAL1', xx(1), 14, 'x-axis origin coordinate', status)
-                          call ftpkyd(unit, 'CDELT1', (xx(2)-xx(1))/(n(1)-1), 14, 'x-axis increment', status)
-                  end if
-                  if (present(yy)) then
-                          call ftpkyj(unit, 'CRPIX2', 1, 'y-axis origin pixel', status)
-                          call ftpkyd(unit, 'CRVAL2', yy(1), 14, 'y-axis origin coordinate', status)
-                          call ftpkyd(unit, 'CDELT2', (yy(2)-yy(1))/(n(2)-1), 14, 'y-axis increment', status)
-                  end if
-          end do
+    ! write image extensions
+    do i = 1,hdus
+      call ftiimg(unit, bitpix, naxis, n, status)
 
-          ! clean up
-          call ftclos(unit, status)
-          call ftfiou(unit, status)
+      select case (kind(array))
+      case (4); call ftppre(unit, group, 1, npix, array(i,:,:), status)
+      case (8); call ftpprd(unit, group, 1, npix, array(i,:,:), status)
+      case default; call abort
+      end select
+
+      if (present(vars)) then
+        if (present(coords)) then
+          call ftpkys(unit, 'EXTNAME', trim(vars(i))//coords, 'variable stored in extension', status)
+        else
+          call ftpkys(unit, 'EXTNAME', trim(vars(i)), 'variable stored in extension', status)
+        end if
+      end if
+      if (present(xx)) then
+        call ftpkyj(unit, 'CRPIX1', 1, 'x-axis origin pixel', status)
+        call ftpkyd(unit, 'CRVAL1', real(xx(1),8), 14, 'x-axis origin coordinate', status)
+        call ftpkyd(unit, 'CDELT1', real(xx(2)-xx(1),8)/real(n(1)-1,8), 14, 'x-axis increment', status)
+      end if
+      if (present(yy)) then
+        call ftpkyj(unit, 'CRPIX2', 1, 'y-axis origin pixel', status)
+        call ftpkyd(unit, 'CRVAL2', real(yy(1),8), 14, 'y-axis origin coordinate', status)
+        call ftpkyd(unit, 'CDELT2', real(yy(2)-yy(1),8)/real(n(2)-1,8), 14, 'y-axis increment', status)
+      end if
+    end do
+
+    ! clean up
+    call ftclos(unit, status)
+    call ftfiou(unit, status)
   end subroutine write2fits
 
 end program

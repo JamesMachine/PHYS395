@@ -1,11 +1,12 @@
 
 # make this false if you don't animate to run faster
-doanimate=false
+doanimate=true
 
 echo "Program starts..."
 
-#gfortran -O3 -fdefault-real-8 -fopenmp dbpend.f90 -llapack -lcfitsio -o dbpend && ./dbpend
-gfortran -O3 -fopenmp dbpend.f90 -llapack -lcfitsio -o dbpend && ./dbpend
+#note that without using -fdefault-real-8, it will be faster
+gfortran -O3 -fdefault-real-8 -fopenmp dbpend.f90 -llapack -lcfitsio -o dbpend && ./dbpend
+gfortran -O3 -fopenmp dbpend_phsp.f90 -llapack -lcfitsio -o dbpend_phsp && ./dbpend_phsp
 
 echo "plotting starts..."
 gnuplot plotme.gpl
