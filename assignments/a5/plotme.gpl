@@ -1,0 +1,159 @@
+#q1
+
+input_filepath='./output/output_q1/output_q1_psi'
+output_filepath='./output/output_q1/q1_psi_evenodd.png'
+output_filepath2='./output/output_q1/q1_psi.png'
+
+set terminal png enhanced
+set output output_filepath
+
+set grid
+set title 'psi_{even}(x) and psi_{odd}(x) for E = 4.2'
+set xlabel 'x'
+set ylabel 'psi_{even}(x) or psi_{odd}(x)'
+
+set xrange [-4:4]
+set yrange [-1:1]
+
+plot input_filepath u 1:2 index 0 with lines title "psi_{even}(x)",\
+     input_filepath u 1:3 index 0 with lines title "psi_{odd}(x)",\
+
+
+# also plot psi(x)
+set terminal png enhanced
+set output output_filepath2
+
+set grid
+set title 'Q1: psi(x) for E = 4.2'
+set xlabel 'x'
+set ylabel 'psi(x)'
+
+set xrange [-4:4]
+set yrange [-1:1]
+
+plot input_filepath u 1:4 index 0 with lines title "psi(x)"
+
+
+#Q2
+
+do for [i = 0:9]{
+
+  input_filepath1='./output/output_q2/q2_E'
+  input_filepath2='./output/output_q2/q2_psi'
+  output_filepath = "./output/output_q2/q2_psi_E".i.".png"
+
+
+  #dummpy plot to read eigenvalue from input_filepath1 and store it to variable eigenvalue
+  plot input_filepath1 every ::i::i using (eigenvalue=$1)
+
+  #convert number to string using sprintf
+  eigenvalue = sprintf("%1.5f",eigenvalue)
+
+  set terminal png enhanced
+  set output output_filepath
+
+  set grid
+  set title 'Q2: psi(x) and psi(x)^2 for Energy level E'.i.': '.eigenvalue
+  set xlabel 'x'
+  set ylabel 'psi(x) or psi(x)^2'
+
+  set xrange [-7:7]
+  set yrange [-1:1]
+
+  plot input_filepath2 u 1:2 index i with lines title "psi(x) for E".i,\
+       input_filepath2 u 1:3 index i with lines title "psi(x)^2 for E".i
+}
+
+
+
+#Q3
+do for [i = 0:9]{
+
+  input_filepath1='./output/output_q3/q3_E'
+  input_filepath2='./output/output_q3/q3_psi'
+  output_filepath = "./output/output_q3/q3_psi_E".i.".png"
+
+
+  #dummpy plot to read eigenvalue from input_filepath1 and store it to variable eigenvalue
+  plot input_filepath1 every ::i::i using (eigenvalue=$1)
+
+  #convert number to string using sprintf
+  eigenvalue = sprintf("%1.5f",eigenvalue)
+
+  set terminal png enhanced
+  set output output_filepath
+
+  set grid
+  set title 'Q3: psi(x) and psi(x)^2 for Energy level E'.i.': '.eigenvalue
+  set xlabel 'x'
+  set ylabel 'psi(x) or psi(x)^2'
+
+  set xrange [-4:4]
+  set yrange [-1:1]
+
+  plot input_filepath2 u 1:2 index i with lines title "psi(x) for E".i,\
+       input_filepath2 u 1:3 index i with lines title "psi(x)^2 for E".i
+}
+
+
+
+#q4
+
+do for [i = 0:9]{
+
+  input_filepath1='./output/output_q4/q4_E'
+  input_filepath2='./output/output_q4/q4_psi'
+  output_filepath = "./output/output_q4/q4_psi_E".i.".png"
+
+
+  #dummpy plot to read eigenvalue from input_filepath1 and store it to variable eigenvalue
+  plot input_filepath1 every ::i::i using (eigenvalue=$1)
+
+  #convert number to string using sprintf
+  eigenvalue = sprintf("%1.5f",eigenvalue)
+
+  set terminal png enhanced
+  set output output_filepath
+
+  set grid
+  set title 'Q4: psi(x) and psi(x)^2 for Energy level E'.i.': '.eigenvalue
+  set xlabel 'x'
+  set ylabel 'psi(x) or psi(x)^2'
+
+  set xrange [-7:7]
+  set yrange [-0.2:0.2]
+
+  plot input_filepath2 u 1:2 index i with lines title "psi(x) for E".i,\
+       input_filepath2 u 1:3 index i with lines title "psi(x)^2 for E".i
+}
+
+
+#q5
+
+do for [i = 0:9]{
+  input_filepath1='./output/output_q5/q5_E'
+  input_filepath2='./output/output_q5/q5_psi'
+  output_filepath = "./output/output_q5/q5_psi_E".i.".png"
+
+
+  #dummpy plot to read eigenvalue from input_filepath1 and store it to variable eigenvalue
+  plot input_filepath1 every ::i::i using (eigenvalue=$1)
+
+  #convert number to string using sprintf
+  eigenvalue = sprintf("%1.5f",eigenvalue)
+
+  set terminal png enhanced
+  set output output_filepath
+
+  set grid
+  set title 'Q5 psi(x) and psi(x)^2 for Energy level E'.i.': '.eigenvalue
+  set xlabel 'x'
+  set ylabel 'psi(x) or psi(x)^2'
+
+  set xrange [-5:5]
+  set yrange [-0.2:0.2]
+
+  plot input_filepath2 u 1:2 index i with lines title "psi(x) for E".i,\
+       input_filepath2 u 1:3 index i with lines title "psi(x)^2 for E".i
+}
+

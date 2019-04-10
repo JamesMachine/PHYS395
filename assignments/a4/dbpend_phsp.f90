@@ -14,7 +14,7 @@ program dbpened_phsp; implicit none
   real,parameter :: dt = 0.038
 
   ! image size and scan bounds
-  integer, parameter :: nx = 2**5, ny = 2**5 !used smaller case to reduce the time!!!!!!!!!!!!!!!!!!!
+  integer, parameter :: nx = 2**7, ny = 2**7 !used smaller case to reduce the time!!!!!!!!!!!!!!!!!!!
   real::xx(2),yy(2)
 
   ! non-parameter variables
@@ -29,22 +29,21 @@ program dbpened_phsp; implicit none
 
  xx = [-3, 3]
  yy = [-3, 3]
-  write(*,*) "Q3: phase space scan starts..."
+  write(*,*) "Q3: phase space (entire phase) scan starts..."
   tlength = 10001*period
   !$omp parallel do
   do j = 1,ny
+    write(*,*) "th2(0)=",yy(1) + (yy(2)-yy(1))*(j-1)/(ny-1), "starts!"
     do i = 1,nx
-      write(*,*) 'th1(0)=',xx(1) + (xx(2)-xx(1))*(i-1)/(nx-1),"th2(0)=",yy(1) + (yy(2)-yy(1))*(j-1)/(ny-1)
       tflip = integrate2(xx(1) + (xx(2)-xx(1))*(i-1)/(nx-1), yy(1) + (yy(2)-yy(1))*(j-1)/(ny-1), tlength, dt)
       data(:,i,j) = log10(tflip) / tlength
     end do
   end do
   !$omp end parallel do
-  write(*,*) "phase space scan ends..."
+  write(*,*) "phase space (entire phase) scan ends..."
 
   ! write out image to file
   call write2fits('./output/data.fit', data, xx, yy, ['th1 ','th2 ','thd1','thd2'], '(th1(0),th2(0))')
-
 
   deallocate(data)
 

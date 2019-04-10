@@ -1,21 +1,13 @@
-Assignment 4:
+Assignment 4 (Re-submitted based on the peer review):
 
-Running instruction for shorter program:
+Running instruction for shorter program (It took me 5hours of running...):
 time bash runme.sh
 
-Running instruction for MUCH LONGER program for Q3 only:
-time bash runme_longrun.sh
+in runme.sh,
+doanimate=false --> not doing animation will run faster
+dofractal=false --> not doing phase scan will run much much faster
 
-runme.sh took me 5min to run. runme_longrun.sh took me 108min to run! They have different time step and different integration length of time. For the longer program, there are more pixels defined.
+Under ./output folder, the program will save results into output folder (Don't delete output folder).
+Under ./final_output folder, all the final results are stored in this folder.
 
-Output under ./output folder:
-Results
-energy_conservation_violation.png
-trajectory.png
-data.png
-motion.gif
-data.fit --> used for plotting and can get data.png through plotfit.py
 
-Output under ./output_longrun folder:
-data.png
-data.fit --> used for plotting and can get data.png through plotfit_longrun.py

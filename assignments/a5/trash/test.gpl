@@ -1,0 +1,4 @@
+N=1
+a="hello"
+
+print a.N.".png"
