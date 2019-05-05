@@ -1,40 +1,37 @@
-!Assignment 1 - q2 - 100terms
+!Assignment 1 - q2_2 - 100 terms
 
 !Running Instruction for this specific file
-!gfortran -fdefault-real-8 q2_2.f90 -o q2_2 && ./q2_2
+!gfortran -fdefault-real-8 q2_2.f90 -llapack -o q2_2 && ./q2_2
 
-program a1code
+program q2
 implicit none
 
-!declaration
-
-integer:: i,n, k
+!constants
+integer, parameter :: n=100 !choose number of samples
+integer, parameter :: k=1000 !choose output points as approximation
 !n: number of samples
 !k: number of output points
 
+!declaration
+integer:: i
 real,dimension(:),allocatable::x,y,xapprox,yapprox
 
 
-!choose number of samples
-n=100
 
-!choose output points as approximation
-k=1000
 
 allocate(x(n),y(n),xapprox(k),yapprox(k))
-
 x=populateArray(-1.0,1.0,n)
 xapprox=populateArray(-1.0,1.0,k)
 
 
-open(1, file = 'output2_3.csv', status='unknown')
+open(1, file = './output/output_q2/q2_100terms_sample.dat', status='unknown')
 do i=1,n
   y(i)=f(x(i))
   write(1,*)  x(i), y(i)
 end do
 close(1)
 
-open(1, file = 'output2_4.csv', status='unknown')
+open(1, file = './output/output_q2/q2_100terms_approx.dat', status='unknown')
 yapprox = fapprox(x,y,xapprox,n,k)
 do i=1,k
   write(1,*) xapprox(i), yapprox(i)
@@ -42,13 +39,13 @@ end do
 close(1)
 
 
-
 deallocate(x,y,xapprox,yapprox)
 
 contains
 
   subroutine gaussj(n, A, B)
-    integer ::n; real:: A(n,n), B(1,n)
+    integer ::n
+    real:: A(n,n), B(n)
     integer ::i,j,pivot
     real ::temp(n,n), tempb, divnum !this is used for swapping
     integer ::loop
@@ -58,35 +55,35 @@ contains
     do while(i<=n .and. j<=n)
 
       !step 1: if the aij==0, needs to swap the rows
-      if (A(j,i)==0) then
-        pivot=maxloc(abs(A(j,i:)), dim=1)
+      if (A(i,j)==0) then
+        pivot=maxloc(abs(A(i,j:)), dim=1)
 
-        if (A(j,i-1+pivot)==0) then ! special case: all row entries at j-th column is 0
+        if (A(i-1+pivot,j)==0) then ! special case: all row entries at j-th column is 0
           j=j+1 !go to the next column
           cycle ! go to the next iteration
         else
           !if all other rows entries are not zero, swap the rows
-          temp(:,i) = A(:,i)
-          A(:,i) = A(:,i-1+pivot)
-          A(:,i-1+pivot) = temp(:,i)
+          temp(i,:) = A(i,:)
+          A(i,:) = A(i-1+pivot,:)
+          A(i-1+pivot,:) = temp(i,:)
 
-          tempb = B(1,i)
-          B(1,i) = B(1,i-1+pivot)
-          B(1,i-1+pivot) = tempb
+          tempb = B(i)
+          B(i) = B(i-1+pivot)
+          B(i-1+pivot) = tempb
 
         end if
       end if
 
       !step2: divide row to obtain 1
-      divnum=A(j,i)
-      A(:,i) = A(:,i)/divnum
-      B(1,i) = B(1,i)/divnum
+      divnum=A(i,j)
+      A(i,:) = A(i,:)/divnum
+      B(i) = B(i)/divnum
 
       !step3: eliminate all other entries at j-th column --> 0
       do loop=1,n
         if(loop /= i) then
-          B(1,loop)=B(1,loop)-A(j,loop)*B(1,i) !this one has to be first as you are using A(j,loop)
-          A(:,loop)=A(:,loop)-A(j,loop)*A(:,i)
+          B(loop)=B(loop)-A(loop,j)*B(i) !this one has to be first as you are using A(j,loop)
+          A(loop,:)=A(loop,:)-A(loop,j)*A(i,:)
         end if
       end do
 
@@ -97,13 +94,32 @@ contains
 
   end subroutine
 
+  ! solve A.x = B using LAPACK xGESV
+  ! A gets destroyed, answer is returned in B
+  subroutine lsolve(n, A, B)
+    integer n, pivot(n), status; real A(n,n), B(n)
+
+    ! initialize status to all clear
+    status = 0
+
+    ! call appropriate version of xGESV
+    select case (kind(A))
+      case(4); call sgesv(n, 1, A, n, pivot, B, n, status)
+      case(8); call dgesv(n, 1, A, n, pivot, B, n, status)
+      case default; call abort
+    end select
+
+    ! abort at first sign of trouble
+    if (status /= 0) stop "singular matrix in lsolve()"
+  end subroutine
+
 
   subroutine printMatrix(row, col, M)
     integer :: row, col,i
-    real :: M(col,row)
+    real :: M(row,col)
 
     do i=1,row
-      write(*,*) M(:,i)
+      write(*,*) M(i,:)
     end do
   end subroutine
 
@@ -133,6 +149,7 @@ contains
   end function
 
 
+
   function ChebyshevTSums(c,xapprox,n,k)
     real,intent(in) ::c(n), xapprox(k)
     integer, intent(in) ::n,k
@@ -144,40 +161,39 @@ contains
       sums=0
       do j=1,n !j-th number of term
         sums=sums+c(j)*cos((j-1)*acos(xapprox(i))) ! make sure j-1 !!!!!
-      ChebyshevTSums(i)=sums
+        ChebyshevTSums(i)=sums
       end do
     end do
 
 
   end function
+
 
   ! approximating value using ChebyshevT given x and y array sample points
   function fapprox(x,y,xapprox,n,k)
-    real,intent(in) ::x(n), y(n), xapprox(k)
+    real,intent(in) ::x(n), y(n), xapprox(k) !x, y are sample points
     integer, intent(in) ::n,k
-
-    integer ::i,j
     real ::fapprox(k)
-
     real ::A(n,n)
-    real ::B(1,n)
+    real ::B(n)
+    integer ::i,j !
+    ! i: i-th sample point
+    ! j: j-th term
 
+    !Based on the sample points, compute the coefficients
     do i=1,n
       do j=1,n
-        A(j,i)=ChebyshevT(x(i),j-1) ! make sure j-1 !!!!!
+        A(i,j)=ChebyshevT(x(i),j-1) ! make sure j-1 !!!!!
       end do
-      B(1,i) = y(i)
+      B(i) = y(i)
     end do
 
     call gaussj(n,A,B)
+    !call lsolve(n,A,B) ! this also works
+    !now you got the coefficients
 
-
-    fapprox(1:k) = ChebyshevTSums(B(1,:),xapprox,n,k)
-
+    fapprox(1:k) = ChebyshevTSums(B, xapprox, n, k)
   end function
-
-
-
 
 
 end program

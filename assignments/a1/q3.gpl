@@ -1,38 +1,69 @@
-set terminal pdf enhanced
-set output 'q3_output_test_derivative.pdf'
+inputfile1="./output/output_q3/q3_10terms_sample.dat"
+inputfile2="./output/output_q3/q3_10terms_expected.dat"
+inputfile3="./output/output_q3/q3_10terms_approx.dat"
+inputfile4="./output/output_q3/q3_100terms_sample.dat"
+inputfile5="./output/output_q3/q3_10terms_expected.dat"
+inputfile6="./output/output_q3/q3_100terms_approx.dat"
 
 
+outputfile1="./output/output_q3/q3_10terms_sample.png"
+outputfile2="./output/output_q3/q3_10terms_expected.png"
+outputfile3="./output/output_q3/q3_10terms_approx.png"
+outputfile4="./output/output_q3/q3_100terms_sample.png"
+outputfile5="./output/output_q3/q3_100terms_approx.png"
+
+
+
+
+
+
+set terminal png enhanced
+set output outputfile1
 set title 'q3 --- Original Data (10 sample points)'
+set grid
 set xlabel 'x'
 set ylabel 'y'
 unset key
-plot 'output3_1.csv'
+plot inputfile1
 
+
+set terminal png enhanced
+set output outputfile2
 set title 'q3 --- Expected derivative curve'
+set grid
 set xlabel 'x'
 set ylabel 'y'
 unset key
-plot 'output3_2.csv' with lines
+plot inputfile2 with lines
 
 
+set terminal png enhanced
+set output outputfile3
 set title 'q3 --- 10 terms derivative approximation'
+set grid
 set xlabel 'x'
 set ylabel 'y'
 unset key
-plot 'output3_3.csv' with lines
+plot inputfile3 with lines
 
 
 
-
+set terminal png enhanced
+set output outputfile4
 set title 'q3 --- Original Data (100 sample points)'
+set grid
 set xlabel 'x'
 set ylabel 'y'
 unset key
-plot 'output3_1_2.csv'
+plot inputfile4
 
 
+
+set terminal png enhanced
+set output outputfile5
 set title 'q3 --- 100 terms derivative approximation'
+set grid
 set xlabel 'x'
 set ylabel 'y'
 unset key
-plot 'output3_3_2.csv' with lines
+plot inputfile5 with lines

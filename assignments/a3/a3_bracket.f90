@@ -4,7 +4,7 @@
 !gfortran -g -O3 -fdefault-real-8 a3_bracket.f90 -llapack -o a3_bracket && ./a3_bracket
 
 
-program a3code; implicit none
+program a3_bracket; implicit none
 
   !constants
   real, parameter :: pi = 3.141592653589793238462643383279502884197169399375105821Q0
@@ -31,9 +31,9 @@ program a3code; implicit none
 
 
   open(1,file='output2_minima')
-    x = bracket(-1.5,-0.5)
+    x = bracket(-1.5, -0.5)
     write(1,*) x, f(x)
-    x = bracket(0.5 , 1.5)
+    x = bracket(0.5, 1.5)
     write(1,*) x, f(x)
   close(1)
 

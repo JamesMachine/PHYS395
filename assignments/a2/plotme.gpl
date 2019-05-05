@@ -7,7 +7,7 @@ set xlabel 'x'
 set ylabel 'y'
 set xrange [0:1]
 set yrange [-15:15]
-plot 'Assignment #2.dat' title "Original Data",'output1.dat' with lines title "Fitted Data (n=3)"
+plot 'Assignment #2.dat' title "Original Data" w d,'output1.dat' with lines title "Fitted Data (n=3)"
 unset multiplot
 
 set multiplot
@@ -16,7 +16,7 @@ set xlabel 'x'
 set ylabel 'y'
 set xrange [0:1]
 set yrange [-15:15]
-plot 'Assignment #2.dat' title "Original Data",'output2.dat' with lines title "Fitted Data (n=7)"
+plot 'Assignment #2.dat' title "Original Data" w d,'output2.dat' with lines title "Fitted Data (n=7)"
 unset multiplot
 
 
@@ -27,7 +27,7 @@ set xlabel 'x'
 set ylabel 'y'
 set xrange [0:1]
 set yrange [-15:15]
-plot 'Assignment #2.dat' title "Original Data",'output3.dat' with lines title "Fitted Data (n=3)"
+plot 'Assignment #2.dat' title "Original Data" w d,'output3.dat' with lines title "Fitted Data (n=3)"
 unset multiplot
 
 set multiplot
@@ -36,5 +36,5 @@ set xlabel 'x'
 set ylabel 'y'
 set xrange [0:1]
 set yrange [-15:15]
-plot 'Assignment #2.dat' title "Original Data",'output4.dat' with lines title "Fitted Data (n=7)"
+plot 'Assignment #2.dat' title "Original Data" w d,'output4.dat' with lines title "Fitted Data (n=7)"
 unset multiplot

@@ -1,21 +1,38 @@
-set terminal pdf enhanced
-set output 'q2_output.pdf'
+inputfile1="./output/output_q2/q2_10terms_sample.dat"
+inputfile2="./output/output_q2/q2_10terms_approx.dat"
+inputfile3="./output/output_q2/q2_100terms_sample.dat"
+inputfile4="./output/output_q2/q2_100terms_approx.dat"
 
+outputfile1="./output/output_q2/q2_10terms.png"
+outputfile2="./output/output_q2/q2_100terms.png"
+
+
+
+set terminal png enhanced
+set output outputfile1
 
 set multiplot
+set grid
 set title 'q2 --- Original Data (10 sample points) and Approximation (10 terms)'
 set xlabel 'x'
 set ylabel 'y'
 set xrange [-1:1]
 set yrange [-0.1:1.1]
-plot 'output2.csv' title "Original Data", 'output2_2.csv' with lines title "Approximation"
+plot inputfile1 title "Original Data",\
+     inputfile2 with lines title "Approximation"
 unset multiplot
 
+
+
+set terminal png enhanced
+set output outputfile2
 set multiplot
+set grid
 set title 'q2 --- Original Data (100 sample points) and Approximation (100 terms)'
 set xlabel 'x'
 set ylabel 'y'
 set xrange [-1:1]
 set yrange [-0.1:1.1]
-plot 'output2_3.csv' title "Original Data", 'output2_4.csv' with lines title "Approximation"
+plot inputfile3 title "Original Data",\
+     inputfile4 with lines title "Approximation"
 unset multiplot

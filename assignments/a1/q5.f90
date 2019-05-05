@@ -213,8 +213,8 @@ contains
       sums=0
       do j=1,n !j-th number of term
         sums=sums+c(j)*cos((j-1)*acos(xapprox(i))) ! make sure j-1 !!!!!
-      ChebyshevTSums(i)=sums
       end do
+      ChebyshevTSums(i)=sums
     end do
   end function
 
@@ -231,8 +231,8 @@ contains
       do j=1,n !j-th number of term
         !sums=sums+c(j)*((j-1)*sin((j-1)*acos(xapprox(i))/sqrt(1-xapprox(i)**2)))! make sure j-1 !!!!! --> wrong
         sums = sums + c(j) * (j-1) * sin((j-1) * acos(xapprox(i))) / sqrt(1 - xapprox(i)**2)
-      dChebyshevTSums(i)=sums
       end do
+      dChebyshevTSums(i)=sums
     end do
 
 

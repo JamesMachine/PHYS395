@@ -4,7 +4,7 @@
 !gfortran -g -O3 -fdefault-real-8 a3_newton.f90 -llapack -o a3_newton && ./a3_newton
 
 
-program a3code; implicit none
+program a3_newton; implicit none
 
   !constants
   real, parameter :: pi = 3.141592653589793238462643383279502884197169399375105821Q0
